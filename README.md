@@ -5,10 +5,11 @@ searching all the vertices of a graph or tree data structure.
 AI 9 -> Implement A star (A*) Algorithm for any game search problem.
 
 AI 10 ->Implement Alpha-Beta Tree search for any game search problem.
+
 AI 11->Implement a solution for a Constraint Satisfaction Problem using Branch and
 Bound and Backtracking for n-queens problem or a graph colouring problem.
-AI 12->
-Implement Greedy search algorithm for any of the following application:
+
+AI 12->Implement Greedy search algorithm for any of the following application:
  Selection Sort
  Minimum Spanning Tree
  Single-Source Shortest Path Problem
