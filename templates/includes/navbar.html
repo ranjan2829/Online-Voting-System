@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <a class="navbar-brand" href=""><i class="fas fa-person-booth"></i></a>
+    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+        aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link glossy" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link glossy" href="{% url 'polls:list' %}">Polls</a>
+            </li>
+        </ul>
+        <div class="navbar-nav ml-auto">
+            {% if request.user.is_authenticated %}
+            <a class="nav-link glossy" href="{% url 'polls:list_by_user' %}">My Polls</a>
+            <a class="nav-link glossy" href="{% url 'accounts:logout' %}">Logout</a>
+            {% else %}
+            <a class="nav-link glossy" href="{% url 'accounts:login' %}">Login</a>
+            <a class="nav-link glossy" href="{% url 'accounts:register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Additional styling for glossy buttons */
+    .nav-link.glossy {
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        border: 1px solid #3498db;
+        color: #fff;
+        border-radius: 5px;
+        padding: 8px 15px;
+        margin-right: 10px;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-link.glossy:hover {
+        background: linear-gradient(90deg, #2ecc71, #27ae60);
+        color: #fff;
+    }
+</style>

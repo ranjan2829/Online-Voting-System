@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid" style="height: 100vh; background: linear-gradient(135deg, #3498db, #2ecc71); color: #fff;">
+
+    <div class="row justify-content-center align-items-center" style="height: 100%;">
+
+        <div class="col-md-8">
+
+            <h1 class="text-center mt-3 mb-4">Welcome to the Polls List! 🎉</h1>
+
+            <p class="text-center">Current Time: <span id="current-time"></span></p>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="btn-group mb-3" role="group" aria-label="Sort Buttons">
+                <a class="btn btn-{% if 'name' in request.GET %}warning{% else %}primary{% endif %} glossy" href="?name=True"
+                    role="button"><i class="fas fa-sort-alpha-down"></i> Name</a>
+                <a class="btn btn-{% if 'date' in request.GET %}warning{% else %}primary{% endif %} glossy" href="?date=True"
+                    role="button"><i class="far fa-clock"></i> Date</a>
+                <a class="btn btn-{% if 'vote' in request.GET %}warning{% else %}primary{% endif %} glossy" href="?vote=True"
+                    role="button"><i class="fas fa-poll"></i> Vote</a>
+            </div>
+
+            <a class="btn btn-primary mb-3 float-right glossy-hover" href="{% url 'polls:add' %}" role="button">Add <i class="fas fa-plus"></i></a>
+
+            <form class="form-inline mb-3">
+                <div class="input-group">
+                    <input type="search" class="form-control glossy-input" name="search" placeholder="Search" value="{{ search_term }}">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary glossy-hover"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="content-about-voting text-dark">
+                <h2 class="mb-3">Why Voting Matters? 🗳️</h2>
+                <p>Voting is a fundamental right and a crucial part of a democratic society. It allows individuals to voice their opinions, choose their representatives, and shape the future of their community and country.</p>
+                <p>By participating in polls and elections, you contribute to the decision-making process, ensuring that your voice is heard on matters that impact you and those around you.</p>
+                <p>Make your vote count, and be a part of the democratic process! ✨</p>
+            </div>
+
+            <div class="list-group">
+                {% for poll in polls %}
+                <div class="list-group-item glossy">
+                    <a href="{% url 'polls:detail' poll.id %}">
+                        {{ poll.text|truncatewords:5 }}
+                        {% if not poll.active %}
+                        <i class="fas fa-check-circle ml-2"></i>
+                        {% endif %}
+                    </a>
+                    {% if request.user == poll.owner %}
+                    {% if poll.active %}
+                    <a href="{% url 'polls:end_poll' poll.id %}" class="float-right btn btn-danger btn-sm glossy-hover"
+                        data-toggle="tooltip" data-placement="top" title="End Poll" onclick="return confirm('Are you sure?')">
+                        <i class="fas fa-step-forward"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'polls:edit' poll.id %}" class="mr-3 float-right btn btn-primary btn-sm glossy-hover"
+                        data-toggle="tooltip" data-placement="top" title="Edit Poll">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <nav class="mt-3">
+                <ul class="pagination">
+                    {% if polls.has_previous %}
+                    <li class="page-item glossy-hover"><a class="page-link" href="?page=1&{{ params }}">First</a></li>
+                    <li class="page-item glossy-hover"><a class="page-link" href="?page={{ polls.previous_page_number }}&{{ params }}">Previous</a></li>
+                    {% endif %}
+
+                    <li class="page-item active glossy-hover"><a class="page-link" href="">{{ polls.number }}</a></li>
+
+                    {% if polls.has_next %}
+                    <li class="page-item glossy-hover"><a class="page-link" href="?page={{ polls.next_page_number }}&{{ params }}">Next</a></li>
+                    <li class="page-item glossy-hover"><a class="page-link" href="?page={{ polls.paginator.num_pages }}&{{ params }}">Last</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Additional styling for glossy buttons and list items */
+    .glossy {
+        transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        font-weight: bold;
+    }
+
+    .glossy:hover {
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    .glossy-hover:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .glossy-input {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .content-about-voting {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .content-about-voting h2 {
+        color: #333;
+    }
+
+    .content-about-voting p {
+        color: #333;
+    }
+
+    .list-group-item {
+        border: 1px solid #3498db;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 10px;
+    }
+
+    .list-group-item:hover {
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        color: #fff;
+    }
+
+    .pagination .page-link {
+        border: 1px solid #3498db;
+        border-radius: 5px;
+        margin: 0 2px;
+    }
+
+    .pagination .page-link:hover {
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        color: #fff;
+    }
+</style>
+
+<script>
+    // Update current time every second
+    setInterval(function() {
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+        document.getElementById('current-time').innerText = hours + ':' + minutes + ':' + seconds;
+    }, 1000);
+</script>
+
+{% endblock content %}
